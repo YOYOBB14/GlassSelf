@@ -9,34 +9,50 @@
 ## Tech stack
 
 - **Frontend:** Vanilla HTML, CSS, JavaScript (no framework)
-- **Backend:** None — API calls go directly to the Anthropic Claude API from the frontend
-- **Hosting:** Static site (e.g. GitHub Pages)
+- **Backend:** Vercel serverless function (`/api/analyze`) — API key never exposed to the browser
+- **Hosting:** Vercel (recommended) or static
 - **API:** Anthropic Claude (`claude-sonnet-4-20250514`)
 
-## Run locally
+## Deployment (Vercel)
+
+1. Push this repo to GitHub
+2. Go to [vercel.com](https://vercel.com) → **New Project** → Import your GitHub repo
+3. In **Environment Variables**, add:
+   - **Key:** `ANTHROPIC_API_KEY`
+   - **Value:** your Anthropic API key (`sk-ant-...`)
+4. Click **Deploy**
+
+The API key is never exposed to the browser.
+
+## Local development
+
+Create a `.env.local` file in the project root:
+
+```
+ANTHROPIC_API_KEY=sk-ant-your-key-here
+```
+
+Then run:
+
+```
+npx vercel dev
+```
+
+Open the URL shown (e.g. `http://localhost:3000`). The app will call `/api/analyze`, which uses the key from `.env.local`.
+
+## Run locally (static only)
 
 1. Open `index.html` in a browser (or use a local static server, e.g. `npx serve .`).
-2. Enter at least one identity vector (LinkedIn, Twitter, GitHub, or personal site) or a behavioral trace URL.
-3. For the API to work, you must provide your Anthropic API key:
-   - **Option A:** In the browser console, run:  
-     `window.ANTHROPIC_API_KEY = 'your-key-here';`  
-     Then click ANALYZE.
-   - **Option B:** Deploy behind a serverless proxy (Vercel/Netlify function) that adds the `x-api-key` header and forwards requests to `https://api.anthropic.com/v1/messages`. Point the app at your proxy URL instead of calling Anthropic directly.
+2. Enter at least one identity vector or a behavioral trace URL.
+3. **Note:** With static hosting only, the analyze request will fail unless you run `npx vercel dev` or deploy to Vercel.
 
 ## Deploy to GitHub Pages
 
-1. Push this repo to GitHub.
-2. In the repo: **Settings → Pages → Source:** Deploy from branch `main` (or `gh-pages`), folder `/ (root)`.
-3. After deploy, open `https://<your-username>.github.io/<repo-name>/`.
-4. **API key:** GitHub Pages is static, so the key cannot be stored in the repo. Use a serverless proxy (see above) or set the key in the browser console for personal use.
+GitHub Pages serves static files only. The `/api/analyze` endpoint will not work there. Use Vercel (see above) for full functionality.
 
-## API key handling for production
+## API key handling
 
-- Do **not** commit your API key or expose it in client-side code.
-- For production, use a serverless function (Vercel, Netlify, etc.) that:
-  - Accepts POST requests with the prompt payload.
-  - Adds `x-api-key` and `anthropic-version` headers from environment variables.
-  - Forwards the request to `https://api.anthropic.com/v1/messages` and returns the response.
+- Do **not** commit your API key. The Vercel function uses `process.env.ANTHROPIC_API_KEY` — set it in the Vercel dashboard.
 
 ## Project structure
 
@@ -48,6 +64,9 @@ profiler/
 │   ├── app.js       ← generate, render, share
 │   ├── cursor.js    ← custom crosshair cursor
 │   └── ui.js        ← toggles, trace list, clock
+├── api/
+│   └── analyze.js   ← Vercel serverless function
+├── vercel.json      ← Vercel config
 ├── reference/
 │   └── profiler-v3.html  ← original prototype (do not modify)
 ├── .gitignore

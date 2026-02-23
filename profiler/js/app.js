@@ -1,6 +1,6 @@
 /**
  * PROFILER — Generate profile, render report, share
- * API key: set window.ANTHROPIC_API_KEY or use a serverless proxy in production.
+ * Calls /api/analyze (Vercel serverless) — API key is server-side only.
  */
 (function () {
   const TERMINAL_MESSAGES = [
@@ -224,38 +224,16 @@ Return ONLY valid JSON. No markdown fences, no explanation.`;
 
     runTerminalSequence();
 
-    var apiKey = window.ANTHROPIC_API_KEY || '';
-    if (!apiKey) {
-      setTimeout(function () {
-        hideTerminal();
-        showError('API key required. Set window.ANTHROPIC_API_KEY or use a serverless proxy. See README.');
-        document.getElementById('btn-analyze').disabled = false;
-      }, 500);
-      return;
-    }
-
-    var prompt = buildPrompt(data);
     try {
-      var response = await fetch('https://api.anthropic.com/v1/messages', {
+      var response = await fetch('/api/analyze', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 2000,
-          messages: [{ role: 'user', content: prompt }]
-        })
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataPoints: data }),
       });
-      var dataRes = await response.json();
-      if (!response.ok) {
-        throw new Error(dataRes.error?.message || 'API error');
-      }
-      var raw = (dataRes.content || []).map(function (b) { return b.text || ''; }).join('');
-      var clean = raw.replace(/```json|```/g, '').trim();
-      var parsed = JSON.parse(clean);
+
+      var parsed = await response.json();
+      if (!response.ok) throw new Error(parsed.error || 'Analysis failed');
+
       renderReport(parsed);
       window.__lastReport = parsed;
     } catch (err) {
