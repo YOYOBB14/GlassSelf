@@ -1,0 +1,487 @@
+/* PROFILER — Design system (from brief) */
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap');
+
+:root {
+  --bg: #020406;
+  --surface: #060a0d;
+  --card: #080d10;
+  --border: #0d1f2a;
+  --accent: #00ff88;
+  --accent2: #00c8ff;
+  --accent-red: #ff3030;
+  --text: #b8cdd4;
+  --text-dim: #3a5560;
+  --text-bright: #e8f4f8;
+  --mono: 'Share Tech Mono', monospace;
+  --sans: 'Rajdhani', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* Scanline overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+}
+
+/* Grid background */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 24px 24px;
+  opacity: 0.4;
+}
+
+/* Fixed corner brackets */
+.corner {
+  position: fixed;
+  width: 60px;
+  height: 60px;
+  border-color: var(--accent2);
+  border-style: solid;
+  border-width: 0;
+  pointer-events: none;
+  z-index: 9997;
+}
+.corner-tl { top: 0; left: 0; border-top-width: 2px; border-left-width: 2px; }
+.corner-tr { top: 0; right: 0; border-top-width: 2px; border-right-width: 2px; }
+.corner-bl { bottom: 0; left: 0; border-bottom-width: 2px; border-left-width: 2px; }
+.corner-br { bottom: 0; right: 0; border-bottom-width: 2px; border-right-width: 2px; }
+
+/* Custom cursor container */
+#cursor-dot {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 10px var(--accent);
+}
+#cursor-crosshair {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+}
+
+/* Layout */
+.app {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px;
+  padding-top: 80px;
+}
+
+/* Headline */
+h1 {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--accent2);
+  letter-spacing: 0.2em;
+  margin: 0 0 8px 0;
+}
+h2 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.75rem;
+  color: var(--text-bright);
+  margin: 0 0 24px 0;
+}
+
+/* Input blocks — cut corner */
+.input-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+.input-block label {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--accent2);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.input-block input {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-bright);
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  padding: 10px 12px;
+}
+.input-block input::placeholder {
+  color: var(--text-dim);
+}
+
+/* Core identity row */
+.identity-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 520px) {
+  .identity-row { grid-template-columns: 1fr; }
+}
+
+/* Expandable panels */
+.panel {
+  margin-bottom: 12px;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text);
+  cursor: pointer;
+  user-select: none;
+  clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+.panel-header:hover {
+  background: var(--card);
+  color: var(--accent2);
+}
+.panel-header .toggle {
+  color: var(--accent);
+  font-size: 1rem;
+}
+.panel-body {
+  display: none;
+  padding: 16px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-top: none;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+}
+.panel-body.open {
+  display: block;
+}
+.panel-body .grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.panel-body .grid2 .full { grid-column: 1 / -1; }
+
+/* Behavioral trace list */
+.trace-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+}
+.trace-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.trace-row .num {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  min-width: 24px;
+}
+.trace-row input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text-bright);
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  padding: 8px 10px;
+}
+.trace-row button {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent-red);
+  background: transparent;
+  border: 1px solid var(--accent-red);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.trace-row button:hover {
+  background: rgba(255, 48, 48, 0.15);
+}
+.btn-add {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  background: transparent;
+  border: 1px solid var(--accent);
+  padding: 10px 16px;
+  cursor: pointer;
+}
+.btn-add:hover {
+  background: rgba(0, 255, 136, 0.1);
+}
+
+/* Primary button */
+.btn-analyze {
+  font-family: var(--mono);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--bg);
+  background: var(--accent);
+  border: none;
+  padding: 14px 28px;
+  margin-top: 20px;
+  cursor: pointer;
+  letter-spacing: 0.05em;
+}
+.btn-analyze:hover {
+  box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+}
+.btn-analyze:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Loading terminal log */
+.terminal-log {
+  display: none;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin: 24px 0;
+  font-family: var(--mono);
+  font-size: 0.8rem;
+}
+.terminal-log.active {
+  display: block;
+}
+.terminal-log .line {
+  margin-bottom: 6px;
+  color: var(--text-dim);
+}
+.terminal-log .line.done {
+  color: var(--accent);
+}
+.terminal-log .line.done::before {
+  content: '✓ ';
+  color: var(--accent);
+}
+
+/* Report section */
+#report-section {
+  display: none;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+#report-section.visible {
+  display: block;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.profile-id {
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  color: var(--accent2);
+}
+.classified-badge {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent-red);
+  border: 1px solid var(--accent-red);
+  padding: 4px 8px;
+  letter-spacing: 0.15em;
+  animation: blink 1.5s step-end infinite;
+}
+@keyframes blink {
+  50% { opacity: 0.5; }
+}
+.subject-label {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--text-bright);
+  margin: 8px 0 4px 0;
+}
+.tagline {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--text);
+  margin: 0 0 24px 0;
+}
+
+/* Intelligence cards */
+.intel-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 20px;
+  margin-bottom: 16px;
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+}
+.intel-card .card-title {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--accent2);
+  letter-spacing: 0.15em;
+  margin: 0 0 6px 0;
+}
+.intel-card .card-status {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.intel-card .card-content {
+  font-family: var(--sans);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+.intel-card .card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+.intel-card .card-tags span {
+  font-family: var(--mono);
+  font-size: 0.65rem;
+  color: var(--accent2);
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+}
+.intel-card .confidence-bar-wrap {
+  height: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.intel-card .confidence-bar {
+  height: 100%;
+  background: var(--accent);
+  width: 0;
+  transition: width 400ms ease-out;
+  box-shadow: 0 0 6px var(--accent);
+}
+.intel-card .confidence-pct {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Share section */
+.share-section {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.share-section button {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  padding: 10px 18px;
+  cursor: pointer;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+}
+.share-section button:hover {
+  background: rgba(0, 255, 136, 0.1);
+}
+.copy-confirm {
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  margin-left: 8px;
+}
+
+/* Status bar with clock */
+.status-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 28px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--text-dim);
+  z-index: 100;
+}
+#utc-clock {
+  color: var(--accent2);
+}
+
+/* Error message */
+.error-msg {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  color: var(--accent-red);
+  margin-top: 12px;
+  display: none;
+}
+.error-msg.visible {
+  display: block;
+}
+
+/* Hide input section when report visible (optional) */
+#input-section.report-active {
+  opacity: 0.6;
+  pointer-events: none;
+}

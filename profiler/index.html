@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROFILER — Digital Identity Analyzer</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="cursor-dot"></div>
+  <div id="cursor-crosshair"></div>
+  <div class="corner corner-tl"></div>
+  <div class="corner corner-tr"></div>
+  <div class="corner corner-bl"></div>
+  <div class="corner corner-br"></div>
+
+  <div class="app">
+    <h1>DIGITAL IDENTITY ANALYZER</h1>
+    <h2>PROFILER</h2>
+
+    <div id="input-section">
+      <!-- Core Identity Vectors -->
+      <div class="input-block">
+        <label>LinkedIn URL</label>
+        <input type="text" id="linkedin" placeholder="https://linkedin.com/in/...">
+      </div>
+      <div class="identity-row">
+        <div class="input-block">
+          <label>Twitter / X handle</label>
+          <input type="text" id="twitter" placeholder="@username">
+        </div>
+        <div class="input-block">
+          <label>GitHub username</label>
+          <input type="text" id="github" placeholder="username">
+        </div>
+      </div>
+      <div class="input-block">
+        <label>Personal site URL</label>
+        <input type="text" id="personal-site" placeholder="https://...">
+      </div>
+
+      <!-- Optional panels (closed by default) -->
+      <div class="panel">
+        <div class="panel-header"><span class="toggle">+</span> Professional Signals</div>
+        <div class="panel-body">
+          <div class="grid2">
+            <div class="input-block full">
+              <label>Company</label>
+              <input type="text" placeholder="Company name">
+            </div>
+            <div class="input-block full">
+              <label>Job title</label>
+              <input type="text" placeholder="Job title">
+            </div>
+            <div class="input-block">
+              <label>Product Hunt</label>
+              <input type="text" placeholder="profile or product URL">
+            </div>
+            <div class="input-block">
+              <label>Dribbble / Behance</label>
+              <input type="text" placeholder="profile URL">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="toggle">+</span> Social Channels</div>
+        <div class="panel-body">
+          <div class="grid2">
+            <div class="input-block">
+              <label>Instagram</label>
+              <input type="text" placeholder="@handle or URL">
+            </div>
+            <div class="input-block">
+              <label>TikTok</label>
+              <input type="text" placeholder="@handle or URL">
+            </div>
+            <div class="input-block">
+              <label>YouTube</label>
+              <input type="text" placeholder="channel URL">
+            </div>
+            <div class="input-block">
+              <label>Reddit</label>
+              <input type="text" placeholder="u/username">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="toggle">+</span> Content & Knowledge</div>
+        <div class="panel-body">
+          <div class="grid2">
+            <div class="input-block">
+              <label>Substack</label>
+              <input type="text" placeholder="profile URL">
+            </div>
+            <div class="input-block">
+              <label>Medium</label>
+              <input type="text" placeholder="profile URL">
+            </div>
+            <div class="input-block">
+              <label>Goodreads</label>
+              <input type="text" placeholder="profile URL">
+            </div>
+            <div class="input-block">
+              <label>Spotify</label>
+              <input type="text" placeholder="profile URL">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-header"><span class="toggle">+</span> Communities & Gaming</div>
+        <div class="panel-body">
+          <div class="grid2">
+            <div class="input-block">
+              <label>Discord</label>
+              <input type="text" placeholder="username or server">
+            </div>
+            <div class="input-block">
+              <label>Steam</label>
+              <input type="text" placeholder="profile URL">
+            </div>
+            <div class="input-block">
+              <label>Hacker News</label>
+              <input type="text" placeholder="username">
+            </div>
+            <div class="input-block">
+              <label>Stack Overflow</label>
+              <input type="text" placeholder="profile URL">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Behavioral Trace -->
+      <div class="input-block">
+        <label>Behavioral trace (recent sites)</label>
+        <ol class="trace-list" id="trace-list"></ol>
+        <button type="button" class="btn-add" id="btn-add-trace">+ ADD TRACE</button>
+      </div>
+
+      <button type="button" class="btn-analyze" id="btn-analyze">ANALYZE</button>
+      <div id="error-msg" class="error-msg"></div>
+    </div>
+
+    <div id="terminal-log" class="terminal-log"></div>
+
+    <section id="report-section">
+      <div class="report-header">
+        <span id="profile-id" class="profile-id">P-XXXXXX</span>
+        <span class="classified-badge">CLASSIFIED</span>
+      </div>
+      <h2 id="subject-label" class="subject-label">Subject</h2>
+      <p id="tagline" class="tagline">Tagline</p>
+      <div id="report-cards"></div>
+      <div class="share-section">
+        <button type="button" id="btn-share-x">Share on X</button>
+        <button type="button" id="btn-copy-report">Copy Report</button>
+        <span id="copy-confirm" class="copy-confirm"></span>
+      </div>
+    </section>
+  </div>
+
+  <footer class="status-bar">
+    <span>PROFILER v1</span>
+    <span id="utc-clock">00:00:00 UTC</span>
+  </footer>
+
+  <script src="js/cursor.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
